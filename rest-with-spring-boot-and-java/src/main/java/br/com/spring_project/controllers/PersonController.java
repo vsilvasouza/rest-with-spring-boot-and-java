@@ -4,10 +4,8 @@ import br.com.spring_project.model.Person;
 import br.com.spring_project.services.PersonServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -18,13 +16,39 @@ public class PersonController {
     @Autowired
     PersonServices personServices;
 
-    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Person findByid(@PathVariable("id") String id){
+    @GetMapping(
+            value = "/{id}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public Person findById(@PathVariable("id") Long id){
         return personServices.findById(id);
     }
 
-    @GetMapping(value = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(
+            value = "/{id}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> delete(@PathVariable("id") Long id){
+        personServices.delete(id);
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping(
+            produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Person> findAll(){
         return personServices.findAll();
+    }
+
+    @PostMapping(
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    public Person create(@RequestBody Person person){
+        return personServices.create(person);
+    }
+
+    @PutMapping(
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    public Person update(@RequestBody Person person){
+        return personServices.update(person);
     }
 }
